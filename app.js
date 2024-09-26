@@ -6,29 +6,63 @@ const morgan=require("morgan");
 const express =require('express');
 
 const app= express();
+const helmet=require('helmet')
 
 const tourRouter=require('./Routers/tour');
 
 const userRouter=require('./Routers/user');
 
 const AppError =require('./utils/appErro');
+const rateLimit =require('express-rate-limit')
+const mongosanitize=require('express-mongo-sanitize');
+const xss = require('xss-clean');
+
+const hpp =require('hpp');
 
 const GlobalErorHandler =require('./controllers/errorcontroller')
 // middleware
-app.use(express.json( ));
+//set security HHtp headers
+app.use(helmet())
+
+// Body parser,reading data from body into req.body
+app.use(express.json({limit:'15kb'} ));
+//Data sanitization against nosql query injection
+app.use(mongosanitize());
+//Data sanitization against xss
+app.use(xss());
+
+// prevent parameter pollution
+app.use(hpp(
+  {
+    whitelist:['duration','ratingsAverage',"ratingsQuantity","price"]
+  }
+));
+
+
 
 const tours= JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
+
+// to create limit of request from the same IP 
+const limiter=rateLimit({
+  max:100,
+  windoMs:60*60*1000,
+  message:'Too many requests from this IP,please try again in an hour!'
+
+})
+app.use('/api',limiter);
 
 if(process .env.NODE_ENV === 'development'){
   app.use(morgan('dev'));
 }
-
+// test middleware
 app.use((req,res,next)=>{
   const time =req.requestTime =new Date().toISOString();
   console.log(time);
   console.log(req.headers)
   next()
 })
+
+// serving static files
 app.use(express.static(`${__dirname}/public`))
 
 app.get('/',(req,res)=>{
@@ -46,9 +80,9 @@ app.use('/api/v1/users',userRouter)
 // app.route('api/v1/users/:id').get(getUser).delete(deleteUser);
 
 //  handle unreached route or route that doesnt exist 
-        
+
 app.all('*', (req,res,next)=>{
- 
+
   // const err = new Error(`can't find ${req.originalUrl}on this server`)
   // err.status ='fail';
   // err.statuscode=400
@@ -59,5 +93,5 @@ app.all('*', (req,res,next)=>{
 app.use(GlobalErorHandler)
 
 module.exports=app;
- 
+
 

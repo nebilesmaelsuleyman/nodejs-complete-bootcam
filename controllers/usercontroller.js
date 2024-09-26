@@ -5,17 +5,17 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/appErro');
 
 exports.getAllusers = catchAsync(async (req, res,next) => {
- 
+
   const user= await User.find( )
 
   res.status(200).json({
     status: 'sucess',
-   result:User.length,
+  result:User.length,
     data:{
       user
     }
   });
- 
+
 });
 const filterObj =(obj,...allowedFields)=>{
   const newObj ={};
@@ -45,13 +45,14 @@ res.status(200).json({
 })
 
 });
-exports.deleteMe=(req,res,next)=>{
-  const users= User.findByIdAndUpdate(req.user.i, {activea:false});
-res.status(204).json({
-  status:'success',
-  data:null
+exports.deleteMe =catchAsync(async(req,res,next)=>{
+  await User.findByIdAndUpdate(req.user.id,{active:false});
+
+  res.status(204).json({
+    status:'succes',
+    data:null
+  })
 })
-}
 
 // eslint-disable-next-line prettier/prettier
 exports.getuser = (req, res) => {

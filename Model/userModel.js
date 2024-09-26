@@ -104,6 +104,10 @@ userSchema.methods.correctpasswords=async function(candidatePassword,userPasswor
     return await bcrypt.compare(candidatePassword, userPassword)
 }
 
+userSchema.pre(/^find/,function(){
+    this.find({active: {$ne:false}});
+})
+
 
 userSchema.methods.createPasswordResetToken = async function() {
     const resetToken =   crypto.randomBytes(32).toString('hex');
