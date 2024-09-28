@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 const mongoose = require('mongoose');
-const slugify=require('slugify')
+const slugify=require('slugify');
+// const user= require('./userModel');
 
 const tourschema = new mongoose.Schema({
   // _id: mongoose.Schema.Types.ObjectId,
@@ -89,7 +90,38 @@ const tourschema = new mongoose.Schema({
     type: Number,
     required: [true, ' A tour must have a price'],
   },
+  guides:[
+    {type:mongoose.Schema.ObjectId,
+      ref:'user'
+    }
+  ],
+
+  startLocation: {
+    // GeoJSON
+    type: {
+      type: String,
+      default: 'Point',
+      enum: ['Point']
+    },
+    coordinates: [Number],
+    address: String,
+    description: String
+  },
+  locations: [
+    {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point']
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+      day: Number
+    }
+  ],
 },
+
 {
   // inclussion of virtual property when converting document to json
   toJSON:{virtuals:true,
@@ -108,6 +140,20 @@ tourschema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+
+//if the relation was embeding we use this code 
+// tourschema.pre('save', async function(next) {
+//   // Create an array of Promises
+//   const guidesPromises = this.guides.map(async (id) => {
+//     return await user.findById(id);
+//   });
+
+//   // Wait for all promises to resolve and replace guides with user objects
+//   this.guides = await Promise.all(guidesPromises);
+
+//   next();
+// });
+
 // query middleware
 // tourschema.pre(/^find/, function(next) {
 //   this.find({ secretTour: { $ne: true } });
@@ -115,6 +161,15 @@ tourschema.pre('save', function(next) {
 //   this.start = Date.now();
 //   next();
 // });
+
+tourschema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  next();
+});
+
 tourschema.pre('/^find/',function(){
   // moddifies the current query by adding a codition that filters out any document
   // where there secrettour field is not equal to true .excludes the secret tour form the query results

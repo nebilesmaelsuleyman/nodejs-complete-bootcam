@@ -20,7 +20,7 @@ mongoose.connection.on('connected',()=>{
 })
 
 // READ JSON FILE
- const tours= JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`,'utf-8'))
+const tours= JSON.parse(fs.readFileSync(`${__dirname}/tours.json`,'utf-8'))
   
 
   // IMPORT DATA INTO DB
@@ -31,7 +31,7 @@ mongoose.connection.on('connected',()=>{
 
 
     }catch(err){
-     console.log(err);
+    console.log(err);
     }
   }
   // DELETE ALL DATA FROM DB
@@ -43,7 +43,7 @@ const deleteData =async ()=>{
 
   }catch(err){
     console.log(err);
- 
+
   }
 }
 
