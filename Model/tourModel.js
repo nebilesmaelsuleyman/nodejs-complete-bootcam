@@ -124,16 +124,18 @@ const tourschema = new mongoose.Schema({
 
 {
   // inclussion of virtual property when converting document to json
-  toJSON:{virtuals:true,
-    // inclussion of virtual property when converting document to plainjavascript object
-  toObject:{virtuals:true}
-  }
+  toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 })
 
 tourschema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
-
+tourschema.virtual('review',{
+  ref:"Review",
+  foreignField:'tour',
+  localField:'_id'
+})
 
 tourschema.pre('save', function(next) {
   console.log('slugify middleware is triggered')
@@ -192,5 +194,6 @@ tourschema.pre('aggregate', function(next) {
 });
 
 const Tour = mongoose.model('Tour', tourschema);
+
 
 module.exports = Tour;

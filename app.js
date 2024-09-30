@@ -1,24 +1,19 @@
 /* eslint-disable prettier/prettier */
 const fs=require("fs");
-
 const morgan=require("morgan");
-
 const express =require('express');
-
 const app= express();
 const helmet=require('helmet')
 
 const tourRouter=require('./Routers/tour');
-
+const reviewRouter=require('./Routers/review');
 const userRouter=require('./Routers/user');
 
 const AppError =require('./utils/appErro');
 const rateLimit =require('express-rate-limit')
 const mongosanitize=require('express-mongo-sanitize');
 const xss = require('xss-clean');
-
 const hpp =require('hpp');
-
 const GlobalErorHandler =require('./controllers/errorcontroller')
 // middleware
 //set security HHtp headers
@@ -37,8 +32,6 @@ app.use(hpp(
     whitelist:['duration','ratingsAverage',"ratingsQuantity","price"]
   }
 ));
-
-
 
 const tours= JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
@@ -75,10 +68,12 @@ app.get('/',(req,res)=>{
 // app.patch("api/v1/tours/:id",update)
 // app.get('/api/v1/tours/',getAllTours)
 //Routes 
+
 app.use    ("/api/v1/tours",tourRouter)
 app.use('/api/v1/users',userRouter) 
-// app.route('api/v1/users/:id').get(getUser).delete(deleteUser);
+app.use('/api/v1/reviews', reviewRouter);
 
+// app.route('api/v1/users/:id').get(getUser).delete(deleteUser);
 //  handle unreached route or route that doesnt exist 
 
 app.all('*', (req,res,next)=>{

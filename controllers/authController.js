@@ -19,8 +19,12 @@ const signToken = id => {
     const token = signToken(user._id);
 
     const cookieOptions ={
-      expires:new Date ( Date.now()+ process.env.JWT_COOKIE_EXPIRES_IN *24*60*60*1000),
-      httpOnly:true}
+     
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true 
+       // Only use in HTTPS environments
+      };
     
     if (process.env. NODE_ENV=== 'production')cookieOptions.secure=true;
     
@@ -34,7 +38,7 @@ const signToken = id => {
         user: user
       }
     });
-   
+  
   }
 
   exports.signup = catchAsync(async (req, res, next) => {
@@ -51,7 +55,7 @@ const signToken = id => {
   //   pm.environment.set("jwt", jsonData.token);
 
   createSendToken(newuser, 201, res); 
- 
+
   });
 
   exports.login = catchAsync(async (req, res, next) => {
@@ -74,7 +78,7 @@ if (!ispasswordValid){
   return next(new AppError('incorrect password',401))
 }
 
- 
+
 
     // 3) If everything ok, send token to client
     createSendToken(founduser, 200, res);
@@ -93,7 +97,7 @@ exports.protected=catchAsync(async (req,res,next)=>{
     // 2 validate token
 
     const decoded= await promisify(jwt.verify)(token,process.env.jwt_secrte)
-     console.log(decoded)
+    console.log(decoded)
 
 
       // 3) Check if user still exists
@@ -113,7 +117,7 @@ exports.protected=catchAsync(async (req,res,next)=>{
     //  if(currentUser.changedaPasswordAfter(decoded.iat)){
     //   return next(new AppError('user recently changed password!,please login again',401))
     //  }
-     
+    
 // Grant Acces to protected route
 req.user= currentUser 
     next()
@@ -186,7 +190,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   console.log("this is resettoken", resetToken);
 
   // Save the user with the generated token
-   users.save({ validateBeforeSave: false });
+  users.save({ validateBeforeSave: false });
 
   // Log the token after saving (resetToken is now available)
   console.log(`Your password reset token is: ${resetToken}. Use this token in the reset password endpoint.`);

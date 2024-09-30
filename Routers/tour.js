@@ -4,8 +4,8 @@
 /* eslint-disable prettier/prettier */
 const express= require('express')
 const authController=require('./../controllers/authController')
-
 const Router =express.Router();
+const reviewController=require('./../controllers/reviewController')
 const tourcontroller=require('./../controllers/tourcontroller')
 
 // Router.param("id",tourcontroller.checkid)
@@ -31,5 +31,9 @@ Router
   .get(tourcontroller.getTour)
   .patch(tourcontroller.updateTour)
   .delete(authController.protected , authController.restricTo('admin','lead-guide'), tourcontroller.deleteTour)
+
+Router
+  .route('/:tourId/review')
+  .post(authController.protected , authController.restricTo('user'), reviewController.createReview)
   
   module.exports =Router

@@ -4,7 +4,7 @@
 /* eslint-disable prettier/prettier */
 const express=require('express')
 const usercontroller=require("./../controllers/usercontroller")
-const Router=express.Router();
+const Router=express.Router()
 const authController=require('./../controllers/authController')
 
 Router.patch(
