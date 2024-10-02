@@ -5,7 +5,7 @@
 const express= require('express')
 const authController=require('./../controllers/authController')
 const Router =express.Router();
-const reviewController=require('./../controllers/reviewController')
+const reviewRouter=require('./../Routers/review');
 const tourcontroller=require('./../controllers/tourcontroller')
 
 // Router.param("id",tourcontroller.checkid)
@@ -32,8 +32,7 @@ Router
   .patch(tourcontroller.updateTour)
   .delete(authController.protected , authController.restricTo('admin','lead-guide'), tourcontroller.deleteTour)
 
-Router
-  .route('/:tourId/review')
-  .post(authController.protected , authController.restricTo('user'), reviewController.createReview)
-  
+  //to use review and tour routes separetely and we merg the review rout to the tour 
+  //but in the reveiws the tour id  is not accesed so we enable to use id in the review routes
+Router.use('/:tourId/reviews',reviewRouter);
   module.exports =Router
