@@ -3,7 +3,7 @@ const User = require('./../Model/userModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/appErro');
-
+const factory=require('./../controllers/handlerfactory')
 exports.getAllusers = catchAsync(async (req, res,next) => {
 
   const user= await User.find( )
@@ -55,27 +55,20 @@ exports.deleteMe =catchAsync(async(req,res,next)=>{
 })
 
 // eslint-disable-next-line prettier/prettier
-exports.getuser = (req, res) => {
-  res.status(500).json({
-    status: 'err',
-    message: 'this route is not yet defined',
-  });
-};
+exports.getuser =factory.getOne(User);
+
 exports.createuser = (req, res) => {
   res.status(500).json({
     status: 'err',
-    message: 'this route is not yet defined',
+    message: 'this route is not yet defined ,use sign up route',
   });
 };
-exports.updateuser = (req, res) => {
-  res.status(500).json({
-    status: 'err',
-    message: 'this route is not yet defined',
-  });
-};
+exports.updateuser = factory.updateOne(User);
+
 exports.deleteuser = (req, res) => {
   res.status(500).json({
     status: 'err',
     message: 'this route is not yet defined',
   });
 };
+

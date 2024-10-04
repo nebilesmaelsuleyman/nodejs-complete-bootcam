@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 const mongoose = require('mongoose');
-const slugify=require('slugify');
+const slugify=require('slugify'); 
 // const user= require('./userModel');
 
 const tourschema = new mongoose.Schema({
@@ -20,7 +20,7 @@ const tourschema = new mongoose.Schema({
   maxgroupSize:{
     type:Number,
     
-  },
+  }, 
   difficulty:{
     type:String,
     required:[true, "have diffucltys"],
@@ -120,6 +120,8 @@ const tourschema = new mongoose.Schema({
       day: Number
     }
   ],
+  
+
 },
 
 {
@@ -131,11 +133,13 @@ const tourschema = new mongoose.Schema({
 tourschema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
-tourschema.virtual('review',{
-  ref:"Review",
-  foreignField:'tour',
-  localField:'_id'
-})
+
+tourschema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
+});
+
 
 tourschema.pre('save', function(next) {
   console.log('slugify middleware is triggered')

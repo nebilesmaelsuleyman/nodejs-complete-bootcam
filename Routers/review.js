@@ -7,8 +7,15 @@ const authController =require('./../controllers/authController');
 Router 
 .route('/')
 .get(reviewController.getAllReviews)
+
+//in the below code the reviewController.restrictTo() middleware are cousing long time request so i removed it 
 .post(
     authController.protected,
+    reviewController.setTourUserId,
     reviewController.createReview
     )  
+Router
+    .route('/:id')
+    .get(reviewController.getReview)
+    .patch( reviewController.updateReview)
 module.exports=Router

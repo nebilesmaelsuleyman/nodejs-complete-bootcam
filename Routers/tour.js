@@ -9,7 +9,7 @@ const reviewRouter=require('./../Routers/review');
 const tourcontroller=require('./../controllers/tourcontroller')
 
 // Router.param("id",tourcontroller.checkid)
-
+Router.use('/:tourId/reviews',reviewRouter);
 Router
 .route('/Tour-stats')
 .get(tourcontroller.getTourStats);
@@ -30,9 +30,9 @@ Router
   .route('/:id')
   .get(tourcontroller.getTour)
   .patch(tourcontroller.updateTour)
-  .delete(authController.protected , authController.restricTo('admin','lead-guide'), tourcontroller.deleteTour)
+  .delete(authController.protected , tourcontroller.deleteTour)
 
   //to use review and tour routes separetely and we merg the review rout to the tour 
   //but in the reveiws the tour id  is not accesed so we enable to use id in the review routes
-Router.use('/:tourId/reviews',reviewRouter);
+
   module.exports =Router

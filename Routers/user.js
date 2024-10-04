@@ -7,6 +7,7 @@ const usercontroller=require("./../controllers/usercontroller")
 const Router=express.Router()
 const authController=require('./../controllers/authController')
 
+
 Router.patch(
     '/updateMyPassword',
     authController.protected,
@@ -27,4 +28,6 @@ Router.route('/:id')
     .get(usercontroller.getuser)
     .patch(usercontroller.updateuser)
     .delete(usercontroller.deleteuser)  
+
+
 module.exports=Router;
