@@ -4,19 +4,16 @@ const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/appErro');
 const factory=require('./../controllers/handlerfactory')
-exports.getAllusers = catchAsync(async (req, res,next) => {
 
-  const user= await User.find( )
 
-  res.status(200).json({
-    status: 'sucess',
-  result:User.length,
-    data:{
-      user
-    }
-  });
 
-});
+exports.getMe=(req, res,next)=>{
+  req.params.id =req.user.id;
+  next();
+}
+
+exports.getAllusers =factory.getAll(User)
+
 const filterObj =(obj,...allowedFields)=>{
   const newObj ={};
   Object.keys(obj).forEach(el=>{
@@ -45,6 +42,7 @@ res.status(200).json({
 })
 
 });
+
 exports.deleteMe =catchAsync(async(req,res,next)=>{
   await User.findByIdAndUpdate(req.user.id,{active:false});
 
@@ -55,6 +53,7 @@ exports.deleteMe =catchAsync(async(req,res,next)=>{
 })
 
 // eslint-disable-next-line prettier/prettier
+
 exports.getuser =factory.getOne(User);
 
 exports.createuser = (req, res) => {

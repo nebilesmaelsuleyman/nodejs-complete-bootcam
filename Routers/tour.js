@@ -19,17 +19,17 @@ Router
 
 Router
 .route('/monthly-plan-tour')
-.get(tourcontroller.getMonthlyPlan)
+.get(authController.protected,authController.restrictTo('admin','lead-guide','guide') ,tourcontroller.getMonthlyPlan)
 
 Router
   .route("/")
-  .get(authController.protected, tourcontroller.getAllTours)
-  .post(tourcontroller.createTour)
+  .get( tourcontroller.getAllTours)
+  .post(authController.protected,authController.restrictTo('admin','lead-guide'), tourcontroller.createTour)
   
-Router 
+Router  
   .route('/:id')
   .get(tourcontroller.getTour)
-  .patch(tourcontroller.updateTour)
+  .patch(authController.protected,tourcontroller.updateTour)
   .delete(authController.protected , tourcontroller.deleteTour)
 
   //to use review and tour routes separetely and we merg the review rout to the tour 
