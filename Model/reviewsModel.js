@@ -40,6 +40,8 @@ const reviewSchema = new mongoose.Schema(
 //     select:'name'
 //   })
 // })
+
+reviewSchema.indexes({tour:1, user:1},{unique:true})
 reviewSchema.statics.calclAverageRatings = async function(tourId){
     const states= await this.aggregate([
     {
@@ -59,6 +61,23 @@ reviewSchema.statics.calclAverageRatings = async function(tourId){
     ratingsAverage:states[0].avgRating
   })
 }
+
+
+// this.r = await this.findOne(): This line executes a findOne query
+// to retrieve the Review document that is being updated or deleted. 
+//The result of the query is stored in the this.r property of the 
+//current Review document.
+reviewSchema.pre('/^findOneAnd/',async function(next){
+  this.r = await this.findOne();
+  next();
+})
+//THE ABOVE CODE this.r stores original data before it is modified or updated
+
+
+reviewSchema.post('/^findOneAnd/',async function(){
+  await this.r.constructor.calclAverageRatings(this.r.tour);
+})
+
 
 reviewSchema.post('save',function(){
   //the problem with the below code is the Review is not still defined so we make a change 
