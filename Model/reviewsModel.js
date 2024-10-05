@@ -1,8 +1,9 @@
 
 const mongoose = require('mongoose');
+const Tour =require('./tourModel');
 const reviewSchema = new mongoose.Schema(
   {
-    reviews: {
+    review: {
       type: String,
       required: [true, 'Review can not be empty!']
     },
@@ -39,6 +40,34 @@ const reviewSchema = new mongoose.Schema(
 //     select:'name'
 //   })
 // })
+reviewSchema.statics.calclAverageRatings = async function(tourId){
+    const states= await this.aggregate([
+    {
+    $match : {tour:tourId}
+    },
+    {
+      $group:{
+        _id:'$tour',
+        nRating:{$sum:1},
+        avgRating:{$avg:'$rating'}
+      }
+    }
+  ])
+  console.log(states)
+  await Tour.findByIdAndUpdate(tourId,{
+    ratingsQuantity:states[0].nRating,
+    ratingsAverage:states[0].avgRating
+  })
+}
+
+reviewSchema.post('save',function(){
+  //the problem with the below code is the Review is not still defined so we make a change 
+ // Review.calclAverageRatings(this.tour)
+// the correction is 
+  this.constructor.calclAverageRatings(this.tour);
+})
+
+
 
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review

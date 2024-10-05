@@ -31,7 +31,7 @@ const tourschema = new mongoose.Schema({
   },
   ratingsAverage:{
     type:Number,
-    default:0,
+    default:4.5,
     max:5,
     min:2
   },
@@ -129,6 +129,10 @@ const tourschema = new mongoose.Schema({
   toJSON: { virtuals: true },
     toObject: { virtuals: true }
 })
+
+tourschema.index({price:1 ,ratingAverage:-1})
+
+tourschema.index({slug:1})
 
 tourschema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
