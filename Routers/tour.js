@@ -22,6 +22,9 @@ Router
 .get(authController.protected,authController.restrictTo('admin','lead-guide','guide') ,tourcontroller.getMonthlyPlan)
 
 Router
+  .route('/distance/:latlng/unit/:unit')
+  .get(tourcontroller.getDistances)
+Router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get( tourcontroller.getToursWithin)
 
