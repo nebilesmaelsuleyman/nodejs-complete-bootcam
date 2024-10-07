@@ -34,12 +34,14 @@ const reviewSchema = new mongoose.Schema(
 );
 
 //the below code make the request to take longer time 
-// reviewSchema.pre(/^find/, function(next) {
-//   this.populate({
-//     path:'user',
-//     select:'name'
-//   })
-// })
+reviewSchema.pre(/^find/, function(next) {
+
+  this.populate({
+    path: 'user',
+    select: 'name photo'
+  });
+  next();
+});
 
 reviewSchema.indexes({tour:1, user:1},{unique:true})
 
