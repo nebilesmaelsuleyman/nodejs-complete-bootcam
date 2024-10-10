@@ -154,6 +154,13 @@ tourschema.pre('save', function(next) {
   next();
 });
 
+tourschema.pre('save',function(next){
+  if(!this.startDates || this.startDates ===0){
+    this.startDates=[new Date()]
+  }
+  next()
+});
+
 //if the relation was embeding we use this code 
 // tourschema.pre('save', async function(next) {
 //   // Create an array of Promises

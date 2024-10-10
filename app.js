@@ -9,6 +9,7 @@ const helmet=require('helmet')
 const tourRouter=require('./Routers/tour');
 const reviewRouter=require('./Routers/review');
 const userRouter=require('./Routers/user');
+const viewRouter=require('./Routers/viewroutes')
 
 const AppError =require('./utils/appErro');
 const rateLimit =require('express-rate-limit')
@@ -71,12 +72,8 @@ app.use(express.static(path.join(__dirname,'public')))
 // app.patch("api/v1/tours/:id",update)
 // app.get('/api/v1/tours/',getAllTours)
 //Routes 
-app.get('/',(req,res)=>{
-  res.status(200).render('base',{
-    tour:'the first hiker',
-    user:'nebiloo'
-  })
-})
+
+app.use('/',viewRouter);
 app.use    ("/api/v1/tours",tourRouter)
 app.use('/api/v1/users',userRouter) 
 app.use('/api/v1/reviews', reviewRouter);

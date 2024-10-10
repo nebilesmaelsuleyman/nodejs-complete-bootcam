@@ -1,10 +1,21 @@
 doctype html 
 html
     head
-        title Natours
-        link(rel='stylesheet' href='css/style.css')
-        link(rel='shortcut icon' type='image/png' href='img/favicon.png')
-
+        meta(charset='UTF-8')
+        meta(name='viewport' content='width=device-width, initial-scale=1.0')
+        title Natours | Exciting tours for adventurous people
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
     body
-        h1= tour 
-        h2= user
+        //Header
+        //- block header
+        include _header
+        // CONTENT
+        block content
+         h1 this is the place holdre
+        
+
+        
+        //Footer
+        include footer
