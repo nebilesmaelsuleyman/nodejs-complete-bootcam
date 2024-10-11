@@ -16,7 +16,16 @@ exports.getTour=catchAsync(async (req,res,next)=>{
         fields:'review rating user'
     });
     res.status(200).render('tour',{
-        title:'The Forest Hiker Tour',
+        title:`${tour.name} Tour`,
         tour
     })
+
 })
+exports.logintemp= async (req,res)=>{
+    console.log('login page ditected')
+    res.status(200).render('login',{
+        title:"login to your natours"
+    })
+    console.log('login ended')
+    
+}

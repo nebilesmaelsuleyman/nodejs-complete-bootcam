@@ -1,11 +1,13 @@
 const catchAsync = require('./../utils/catchAsync');
 const user =require('./../Model/userModel' );
-const jwt= require("jsonwebtoken");
 const AppError = require('../utils/appErro');
 const {promisify}=require('util');
 const bcrypt = require('bcryptjs');
 const sendEmail = require('./../utils/email');
 const crypto =require('crypto')
+
+const jwt = require('jsonwebtoken');
+
 
 
 
@@ -41,6 +43,7 @@ const signToken = id => {
   
   }
 
+ 
   exports.signup = catchAsync(async (req, res, next) => {
     const { name,role, email, password, passwordConfirmation ,passwordChangedAt } = req.body;
   
@@ -123,7 +126,37 @@ exports.protected=catchAsync(async (req,res,next)=>{
 req.user= currentUser 
     next()
 })
+//only for renderd pates ,no errorss!
+exports.isLoggedIn = async (req, res, next) => {
+  console.log(req.cookies)
+  if (req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.jwt_secrte
+      );
 
+      // 2) Check if user still exists
+      const currentUser = await user.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      // 3) Check if user changed password after the token was issued
+      if (currentUser.changedaPasswordAfter(decoded.iat)) {
+        return next();
+      }
+
+      // THERE IS A LOGGED IN USER, locals enable the user variable to accesabel in every templates 
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
+      return next();
+    }
+  }
+  next();
+};
 
 exports.restrictTo =(...roles)=>{
   return (req,res,next)=>{
@@ -260,3 +293,4 @@ exports.updatePassword =catchAsync( async (req,res, next)=>{
   createSendToken(currentUser,200,res)  
 
 })
+
