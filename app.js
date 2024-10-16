@@ -1,20 +1,24 @@
 /* eslint-disable prettier/prettier */
+
 const fs=require("fs");
 const morgan=require("morgan");
 const express =require('express');
 const path=require('path');
 const app= express();
 const helmet=require('helmet')
+const cors =require('cors');
+
 
 const tourRouter=require('./Routers/tour');
 const reviewRouter=require('./Routers/review');
 const userRouter=require('./Routers/user');
-const viewRouter=require('./Routers/viewroutes')
+const viewRouter=require('./Routers/viewroutes');
+const cookieParser = require('cookie-parser');
 
 const AppError =require('./utils/appErro');
 const rateLimit =require('express-rate-limit')
 const mongosanitize=require('express-mongo-sanitize');
-const xss = require('xss-clean');
+// const xss = require('xss-clean');
 const hpp =require('hpp');
 const GlobalErorHandler =require('./controllers/errorcontroller')
 // middleware
@@ -23,14 +27,26 @@ app.set('view engine','pug');
 app.set('views',path.join(__dirname,'views'
 ))
 
-app.use(helmet())
+app.use(helmet.contentSecurityPolicy({
+  directives:{
+    scriptSrc:["'self'",'https://cdnjs.cloudflare.com'],
+    connectSrc: ["'self'", 'http://127.0.0.1:3000']
+  }
+}))
 
 // Body parser,reading data from body into req.body
 app.use(express.json({limit:'15kb'} ));
 //Data sanitization against nosql query injection
+app.use(cookieParser());
+app.use(cors({
+  origin:['http://localhost:3000'],
+  credentials:true
+}))
+
 app.use(mongosanitize());
+
 //Data sanitization against xss
-app.use(xss());
+// app.use(xss());
 
 // prevent parameter pollution
 app.use(hpp(
@@ -55,9 +71,11 @@ if(process .env.NODE_ENV === 'development'){
 }
 // test middleware
 app.use((req,res,next)=>{
-  const time =req.requestTime =new Date().toISOString();
-  console.log(time);
-  console.log(req.headers)
+   req.requestTime =new Date().toISOString();
+  
+  // console.log(time);
+  // console.log(req.headers)
+  console.log(req.cookies)
   next()
 })
 
