@@ -9,9 +9,19 @@ const login =async (email ,password)=>{
                 email,
                 password
             },
-            withCredentials:true 
+            withCredentials:true ,
+            headers: {
+                'Access-Control-Allow-Origin': '*', 
+                'Content-Type': 'application/json'
+            }
         })
-        console.log(res);
+        console.log( res.data);
+        if (res.data.token) {
+            const token = res.data.token;
+            document.cookie = `jwt=${token}; path=/; expires=${new Date(Date.now() + 3600000).toUTCString()}; SameSite=Strict`; // Store token in cookie
+        } else {
+            console.error('Token not found in response data');
+        }
 
     }catch(err){
         console.log(err.response.data)

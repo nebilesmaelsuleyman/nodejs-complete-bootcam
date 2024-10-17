@@ -6,8 +6,8 @@ const authController=require('./../controllers/authController')
 
 
 // Router.use(authController.isLoggedIn);
-Router.get('/',getOverview);
-Router.get('/tour/:slug', viewsController.getTour)
+Router.get('/',authController.protected,getOverview);
+Router.get('/tour/:slug',authController.protected, viewsController.getTour)
 Router .get('/login', viewsController.logintemp)
 
 module.exports=Router

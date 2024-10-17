@@ -71,11 +71,12 @@ if(process .env.NODE_ENV === 'development'){
 }
 // test middleware
 app.use((req,res,next)=>{
-   req.requestTime =new Date().toISOString();
+  req.requestTime =new Date().toISOString();
   
   // console.log(time);
   // console.log(req.headers)
-  console.log(req.cookies)
+  console.log('the jwt form the cookie is below')
+  console.log(req.cookies.jwt)
   next()
 })
 
