@@ -130,36 +130,38 @@ req.user= currentUser
     next()
 })
 //only for renderd pates ,no errorss!
-// exports.isLoggedIn = async (req, res, next) => {
-//   console.log(req.cookies)
-//   if (req.cookies.jwt) {
-//     try {
-//       // 1) verify token
-//       const decoded = await promisify(jwt.verify)(
-//         req.cookies.jwt,
-//         process.env.jwt_secrte
-//       );
+exports.isLoggedIn = async (req, res, next) => {
 
-//       // 2) Check if user still exists
-//       const currentUser = await user.findById(decoded.id);
-//       if (!currentUser) {
-//         return next();
-//       }
+  if (req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.jwt_secrte
+      );
 
-//       // 3) Check if user changed password after the token was issued
-//       if (currentUser.changedaPasswordAfter(decoded.iat)) {
-//         return next();
-//       }
+      // 2) Check if user still exists
+      const currentUser = await user.findById(decoded.id);
+      
+      if (!currentUser) {
+        return next();
+      }
 
-//       // THERE IS A LOGGED IN USER, locals enable the user variable to accesabel in every templates 
-//       res.locals.user = currentUser;
-//       return next();
-//     } catch (err) {
-//       return next();
-//     }
-//   }
-//   next();
-// };
+      // 3) Check if user changed password after the token was issued
+      if (currentUser.changedaPasswordAfter(decoded.iat)) {
+        return next();
+      }
+
+      // THERE IS A LOGGED IN USER, locals enable the user variable to accesabel in every templates 
+      res.locals.user = currentUser;
+      console.log(user.name)
+      return next();
+    } catch (err) {
+      return next();
+    }
+  }
+  next();
+};
 
 exports.restrictTo =(...roles)=>{
   return (req,res,next)=>{
