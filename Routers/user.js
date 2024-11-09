@@ -8,13 +8,12 @@ const Router=express.Router()
 const authController=require('./../controllers/authController')
 
 
-
-
     Router.patch('/updateMe',authController.protected,usercontroller.updateMe)
     // Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe)
     Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe);
     Router.post('/signup',authController.signup)
     Router.post('/login',authController.login)
+    Router.get('/logout',authController.logout)
     Router.post('/forgotPassword', authController.forgotPassword)
     Router.patch('/resetPassword/:token',authController.resetPassword)
 
@@ -32,6 +31,5 @@ Router.route('/:id')
     .get(usercontroller.getuser)
     .patch(usercontroller.updateuser)
     .delete(usercontroller.deleteuser)  
-
 
 module.exports=Router;

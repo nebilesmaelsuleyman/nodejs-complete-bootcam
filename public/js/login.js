@@ -1,38 +1,44 @@
-
-const login =async (email ,password)=>{
+import axios from 'axios'
+import {showAlert} from './alert'
+export const login =async (email ,password)=>{
     console.log(email, password)
     try{
         const res = await axios({
             method:"post",
-            url:'http://127.0.0.1:3000/api/v1/users/login',
+            url:`${location.origin}/api/v1/users/login`,
             data:{
                 email,
                 password
             },
             withCredentials:true ,
             headers: {
-                'Access-Control-Allow-Origin': '*', 
-                'Content-Type': 'application/json'
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'Content-Type': 'application/json',
             }
         })
-        console.log( res.data);
-        if (res.data.token) {
-            const token = res.data.token;
-            document.cookie = `jwt=${token}; path=/; expires=${new Date(Date.now() + 3600000).toUTCString()}; SameSite=Strict`; // Store token in cookie
-        } else {
-            console.error('Token not found in response data');
+    // console.log(res.data.status)
+        if(res.data.status === 'success'){
+            showAlert('success','loged in succesfully')
+            window.setTimeout(()=>{
+                location.assign('/');
+            },1500);
         }
-
     }catch(err){
-        console.log(err.response.data)
+        showAlert('error','passwrod or email fail')
 
     }
 }
+export const logout = async ()=>{
+    console.log('axios logout')
+    try{
+        const res =await axios({
+            method:'get',
+            url:`${location.origin}/api/v1/users/logout`,
+        });
 
-
-document.querySelector('.form').addEventListener('submit',e=>{
-    e.preventDefault(); 
-    const email =document.getElementById('email').value;
-    const password= document.getElementById('password').value;
-    login(email,password )
-})
+        if((res.data.status ='success')) location.reload(true); 
+        
+    }catch(err){
+        showAlert('error','error loging out')
+    }
+}    

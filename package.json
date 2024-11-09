@@ -2,15 +2,18 @@
   "name": "starter",
   "version": "1.0.0",
   "description": "\"# nodejs-backend\"",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon server.js",
     "start:prod": "SET NODE_ENV=production & nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "watch": " parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+    "build:js": " parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
   "author": "nebil",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",

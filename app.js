@@ -23,24 +23,29 @@ const hpp =require('hpp');
 const GlobalErorHandler =require('./controllers/errorcontroller')
 // middleware
 //set security HHtp headers
+
 app.set('view engine','pug');
 app.set('views',path.join(__dirname,'views'
 ))
 
+app.use(cookieParser());
 app.use(helmet.contentSecurityPolicy({
-  directives:{
-    scriptSrc:["'self'",'https://cdnjs.cloudflare.com'],
-    connectSrc: ["'self'", 'http://127.0.0.1:3000']
+  directives: {
+    workerSrc: ['self', 'http://localhost:3000', 'blob:'],
+    scriptSrc: ["'self'", 'https://cdnjs.cloudflare.com', 'https://browser.sentry-cdn.com'],
+    connectSrc: ["'self'", "ws://localhost:*", "http://127.0.0.1:3000", "https://*.ingest.us.sentry.io"," ws://localhost:64885/ "]
   }
-}))
+}));
 
 // Body parser,reading data from body into req.body
 app.use(express.json({limit:'15kb'} ));
 //Data sanitization against nosql query injection
-app.use(cookieParser());
+
+
+
 app.use(cors({
-  origin:['http://localhost:3000'],
-  credentials:true
+  origin:['http://localhost:3000',"ws://localhost:*"," ws://localhost:64885/ "],
+  credentials: true
 }))
 
 app.use(mongosanitize());
@@ -62,8 +67,8 @@ const limiter=rateLimit({
   max:100,
   windoMs:60*60*1000,
   message:'Too many requests from this IP,please try again in an hour!'
-
 })
+
 app.use('/api',limiter);
 
 if(process .env.NODE_ENV === 'development'){
@@ -72,6 +77,7 @@ if(process .env.NODE_ENV === 'development'){
 // test middleware
 app.use((req,res,next)=>{
   req.requestTime =new Date().toISOString();
+  
   
   // console.log(time);
   // console.log(req.headers)
@@ -93,7 +99,7 @@ app.use(express.static(path.join(__dirname,'public')))
 //Routes 
 
 app.use('/',viewRouter);
-app.use    ("/api/v1/tours",tourRouter)
+app.use("/api/v1/tours",tourRouter)
 app.use('/api/v1/users',userRouter) 
 app.use('/api/v1/reviews', reviewRouter);
 
