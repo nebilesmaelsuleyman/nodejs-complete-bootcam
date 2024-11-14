@@ -9,6 +9,7 @@ const authController=require('./../controllers/authController')
 Router.get('/', authController.isLoggedIn,viewsController.getOverview);
 Router.get('/tour/:slug',authController.isLoggedIn , viewsController.getTour)
 Router .get('/login',authController.isLoggedIn, viewsController.logintemp)
-Router.get('/me', authController.protected,viewsController.getAccount)
+Router.get('/me', authController.protected,authController.isLoggedIn,viewsController.getAccount)
+Router.post('/submit-user-data', authController.protected,viewsController.updateUserData);
 
 module.exports=Router

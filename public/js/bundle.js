@@ -12849,7 +12849,7 @@ require("core-js/modules/web.dom.iterable.js");
 require("regenerator-runtime/runtime.js");
 var _login = require("./login");
 console.log('hellow parcecel');
-var loginForm = document.querySelector('.form');
+var loginForm = document.querySelector('.form--login');
 var logoutbtn = document.querySelector('.nav__el--logout');
 if (loginForm) {
   loginForm.addEventListener('submit', function (e) {
@@ -12885,7 +12885,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60186" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55848" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

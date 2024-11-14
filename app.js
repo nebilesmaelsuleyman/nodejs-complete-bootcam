@@ -39,6 +39,7 @@ app.use(helmet.contentSecurityPolicy({
 
 // Body parser,reading data from body into req.body
 app.use(express.json({limit:'15kb'} ));
+app.use(express.urlencoded({extended:true, limit:'10kb'}))
 //Data sanitization against nosql query injection
 
 
@@ -120,3 +121,4 @@ app.use(GlobalErorHandler)
 module.exports=app;
 
 
+ 
