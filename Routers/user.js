@@ -7,7 +7,6 @@ const usercontroller=require("./../controllers/usercontroller")
 const Router=express.Router()
 const authController=require('./../controllers/authController')
 
-
     Router.patch('/updateMe',authController.protected,usercontroller.updateMe)
     // Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe)
     Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe);
