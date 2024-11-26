@@ -6,8 +6,10 @@ const express=require('express')
 const usercontroller=require("./../controllers/usercontroller")
 const Router=express.Router()
 const authController=require('./../controllers/authController')
+const multer=require('multer')
 
-    Router.patch('/updateMe',authController.protected,usercontroller.updateMe)
+
+    Router.patch('/updateMe',authController.protected,usercontroller.uploaduserPhoto,usercontroller.updateMe)
     // Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe)
     Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe);
     Router.post('/signup',authController.signup)

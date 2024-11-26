@@ -769,9 +769,9 @@ body {
   display: flex;
 }
 .user-view__menu {
-  -webkit-box-flex: 32rem;
-  -ms-flex: 32rem 0 0px;
-  flex: 32rem 0 0;
+  -webkit-box-flex: 3.2rem;
+  -ms-flex: 3.2rem 0 0px;
+  flex: 3.2rem 0 0;
   background-image: -webkit-gradient(
     linear,
     left top,
