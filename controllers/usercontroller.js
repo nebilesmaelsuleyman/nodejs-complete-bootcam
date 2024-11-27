@@ -1,22 +1,24 @@
 /* eslint-disable prettier/prettier */
 const User = require('./../Model/userModel');
+const sharp=require('sharp')
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/appErro');
 const factory=require('./../controllers/handlerfactory')
 const multer=require('multer')
 
-const multerStorage= multer.diskStorage({
-  destination:(req,file,cb)=>{
-    cb(null,'public/img/users')
-  },
- 
-  filename:(req,file,cb)=>{
-    const ext = file.mimetype.split('/')[1];
-    if (req.user) { cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); } 
-    else { cb(new Error('User information is not available'), false); }
-  }
-})
+// const multerStorage= multer.diskStorage({
+//   destination:(req,file,cb)=>{
+//     cb(null,'public/img/users')
+//   },
+
+//   filename:(req,file,cb)=>{
+//     const ext = file.mimetype.split('/')[1];
+//     if (req.user) { cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); } 
+//     else { cb(new Error('User information is not available'), false); }
+//   }
+// })
+const multerStorage=multer.memoryStorage();
 
 const multerFilter=(req, file,cb)=>{
   if(file.mimetype.startsWith('image')){
@@ -50,8 +52,30 @@ const filterObj =(obj,...allowedFields)=>{
 return newObj
 }
 
+
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) {
+    return next(new Error('No file uploaded')); // Handle missing file
+  }
+
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+console.log("this is the rew.file.filename"+req.file.filename)
+  if (!req.user || !req.user.id) {
+    return next(new Error('User ID not found')); // Handle missing user ID
+  }
+
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+});
 exports.updateMe= catchAsync(async(req,res, next)=>{
+  console.log('this is the body')
   console.log(req.body)
+  console.log('this is the file')
   console.log(req.file)
 // create error handler if the user try to change/post/ the password data 
 if(req.body.password|| req.body.passwordConfirmation){
@@ -59,7 +83,7 @@ if(req.body.password|| req.body.passwordConfirmation){
 }
 
 
-// 3update the password
+// 2)filtered out unwanted fielsd names that are ot allowed to be updated
 const filteredBody =filterObj(req.body, 'name','email');
 if(req.file)filteredBody.photo=req.file.filename;
 

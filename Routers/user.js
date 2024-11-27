@@ -9,19 +9,18 @@ const authController=require('./../controllers/authController')
 const multer=require('multer')
 
 
-    Router.patch('/updateMe',authController.protected,usercontroller.uploaduserPhoto,usercontroller.updateMe)
-    // Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe)
-    Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe);
-    Router.post('/signup',authController.signup)
-    Router.post('/login',authController.login)
-    Router.get('/logout',authController.logout)
-    Router.post('/forgotPassword', authController.forgotPassword)
-    Router.patch('/resetPassword/:token',authController.resetPassword)
+// Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe)
+Router.delete('/deleteMe',authController.protected,usercontroller.deleteMe);
+Router.post('/signup',authController.signup)
+Router.post('/login',authController.login)
+Router.get('/logout',authController.logout)
+Router.post('/forgotPassword', authController.forgotPassword)
+Router.patch('/resetPassword/:token',authController.resetPassword)
 
 //the below middleware allow for the  bellow to use protected route means only loged in user can acces it 
 Router.use(authController.protected)
 
-
+    Router.patch('/updateMe',usercontroller.uploaduserPhoto,usercontroller.updateMe)
     Router.patch('/updateMypassword',authController.updatePassword);
     Router.patch( '/updateMyPassword',authController.updatePassword);
     Router.get('/me', usercontroller.getMe, usercontroller.getuser);
