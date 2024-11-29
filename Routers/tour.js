@@ -36,7 +36,7 @@ Router
 Router  
   .route('/:id')
   .get(tourcontroller.getTour)
-  .patch(authController.protected,tourcontroller.updateTour)
+  .patch(authController.protected,authController.restrictTo('admin','lead-guide'),tourcontroller.uploadTourImages,tourcontroller.resizeTourImages,tourcontroller.updateTour)
   .delete(authController.protected , tourcontroller.deleteTour)
 
   //to use review and tour routes separetely and we merg the review rout to the tour 

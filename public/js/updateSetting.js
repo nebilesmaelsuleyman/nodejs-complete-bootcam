@@ -1,16 +1,17 @@
 import axios from 'axios'
 import {showAlert} from './alert'
 
-export const updateData= async (name, email)=>{
-    try{
+export const updateData= async (data,type)=>{ try{
+        const url=
+            type=== "password"
+            ?'http://127.0.0.1:3000/api/v1/users/updateMyPassword'
+            : 'http://127.0.0.1:3000/api/v1/users/updateMe';
 
         const res =await axios({
             method:'patch',
-            url:`${location.origin}/api/v1/users/updateMe`,
-            data:{
-                name,
-                email
-            }
+            url,
+            data
+        
         });
         
         if (res.data.status === 'success'){
@@ -18,7 +19,7 @@ export const updateData= async (name, email)=>{
         }
 
     }catch(err){
-        showAlert('errror',err.response.data.message)
+        showAlert('error',err.response.data.message)
 
     }
 }

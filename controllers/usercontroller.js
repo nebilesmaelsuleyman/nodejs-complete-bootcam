@@ -18,9 +18,9 @@ const multer=require('multer')
 //     else { cb(new Error('User information is not available'), false); }
 //   }
 // })
-const multerStorage=multer.memoryStorage();
+const Storage=multer.memoryStorage();
 
-const multerFilter=(req, file,cb)=>{
+const Filter=(req, file,cb)=>{
   if(file.mimetype.startsWith('image')){
     cb(null,true);
     
@@ -30,8 +30,8 @@ const multerFilter=(req, file,cb)=>{
 }
 
 const upload= multer({
-  storage:multerStorage,
-  fileFilter:multerFilter
+Storage:Storage,
+fileFilter:Filter
 })
 
 exports.uploaduserPhoto=upload.single('photo')
@@ -59,12 +59,12 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   }
 
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-console.log("this is the rew.file.filename"+req.file.filename)
+console.log("this is the req.file.filename"+req.file.filename)
   if (!req.user || !req.user.id) {
     return next(new Error('User ID not found')); // Handle missing user ID
   }
 
-  await sharp(req.file.buffer)
+await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
@@ -72,6 +72,7 @@ console.log("this is the rew.file.filename"+req.file.filename)
 
   next();
 });
+
 exports.updateMe= catchAsync(async(req,res, next)=>{
   console.log('this is the body')
   console.log(req.body)

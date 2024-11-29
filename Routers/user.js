@@ -20,7 +20,7 @@ Router.patch('/resetPassword/:token',authController.resetPassword)
 //the below middleware allow for the  bellow to use protected route means only loged in user can acces it 
 Router.use(authController.protected)
 
-    Router.patch('/updateMe',usercontroller.uploaduserPhoto,usercontroller.updateMe)
+    Router.patch('/updateMe',usercontroller.uploaduserPhoto,usercontroller.resizeUserPhoto ,usercontroller.updateMe)
     Router.patch('/updateMypassword',authController.updatePassword);
     Router.patch( '/updateMyPassword',authController.updatePassword);
     Router.get('/me', usercontroller.getMe, usercontroller.getuser);
