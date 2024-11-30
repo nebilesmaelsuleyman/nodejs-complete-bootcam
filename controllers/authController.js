@@ -5,6 +5,7 @@ const {promisify}=require('util');
 const bcrypt = require('bcryptjs');
 const sendEmail = require('./../utils/email');
 const crypto =require('crypto')
+const Email=require('./../utils/email');
 
 const jwt = require('jsonwebtoken');
 
@@ -45,7 +46,7 @@ const createSendToken = (user, statusCode, res) => {
 
   exports.signup = catchAsync(async (req, res, next) => {
     const { name,role, email, password, passwordConfirmation ,passwordChangedAt } = req.body;
-  
+   
     const newuser = await user.create({
       name,
       role,
@@ -54,6 +55,10 @@ const createSendToken = (user, statusCode, res) => {
       passwordConfirmation,
       passwordChangedAt
     });
+    const url= `${req.protocol}://${req.get('host')}/me`;
+    console.log(url);
+
+    await new Email(newuser,url).sendWelcome();
   // var jsonData = pm.response.json();
   //   pm.environment.set("jwt", jsonData.token);
 
@@ -262,14 +267,24 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   users.save({ validateBeforeSave: false });
 
   // Log the token after saving (resetToken is now available)
-  console.log(`Your password reset token is: ${resetToken}. Use this token in the reset password endpoint.`);
-  console.log('part is ended');
-  res.status(200).json({
-    status: 'success',
-    resetToken,
-    message: 'Token generated and logged to console. Check your console for the token.',
-  });
-});
+  try{
+    const resetURL=`${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+    await new Email(user,resetURL).sendPasswordReset();
+    res.status(200).json({
+      status: 'success',
+      resetToken,
+      message: 'Token generated and logged to console. Check your console for the token.',
+    });
+  }catch(err){
+    user.passwordResetToken=undefined
+    user.passwordResetExpires=undefined
+    await user.save({validateBeforeSave:false})
+
+    return next(new AppError('there was error sending the email, Try again please!',500))
+  }
+})
+  
+
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   // 1) Get user based on the token
@@ -322,4 +337,3 @@ exports.updatePassword =catchAsync( async (req,res, next)=>{
   createSendToken(currentUser,200,res)  
 
 })
-
