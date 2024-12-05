@@ -8,6 +8,8 @@ const app = require('./app');
 // DATABASE="mongodb+srv://nebilesmael10:ED3P_2meSu4Aef/@cluster0.ramuxrb.mongodb.net/natours?retryWrites=true&w=majority&appName=Cluster0"
 mongoose.connect(process.env.url, {
     useNewUrlParser:true,
+    useCreateIndex:true,
+    useFindAndModify:false,
     useUnifiedTopology:true
 });
 mongoose.connection.on('connected',()=>{

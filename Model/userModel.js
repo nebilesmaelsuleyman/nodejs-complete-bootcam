@@ -113,20 +113,21 @@ userSchema.methods.correctpasswords=async function(candidatePassword,userPasswor
 userSchema.methods.createPasswordResetToken = async function() {
     const resetToken =   crypto.randomBytes(32).toString('hex');
 
-    this.passwordResetToken = crypto
+    this.passwordResetToken= crypto
     .createHash('sha256')
     .update(resetToken)
     .digest('hex');
 
-    console.log({ resetToken },
+    console.log({ resetToken },"this is the resetpasswordtoken in the model",
     this.passwordResetToken);
     this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
     console.log('end of createresettoken')
     return resetToken;
 };
-userSchema.pre('save',function(next){
-    if(this.isModified('password')|| this.isNew )return next();  
-    this.passwordChangedAt = Date.now() -10000;
-})
+
+// userSchema.pre('save',function(next){
+//     if(this.isModified('password')|| this.isNew )return next();  
+//     this.passwordChangedAt = Date.now() -10000;
+// })
 var user = mongoose.model('user',userSchema)
     module.exports=user;
