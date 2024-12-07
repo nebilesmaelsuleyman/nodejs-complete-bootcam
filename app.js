@@ -13,6 +13,7 @@ const tourRouter=require('./Routers/tour');
 const reviewRouter=require('./Routers/review');
 const userRouter=require('./Routers/user');
 const viewRouter=require('./Routers/viewroutes');
+const bookingRouter=require('./Routers/BookingRoutes');
 const cookieParser = require('cookie-parser');
 
 const AppError =require('./utils/appErro');
@@ -104,6 +105,7 @@ app.use('/',viewRouter);
 app.use("/api/v1/tours",tourRouter)
 app.use('/api/v1/users',userRouter) 
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 // app.route('api/v1/users/:id').get(getUser).delete(deleteUser);
 //  handle unreached route or route that doesnt exist 

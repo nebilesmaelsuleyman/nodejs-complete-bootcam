@@ -118,10 +118,10 @@ userSchema.methods.createPasswordResetToken = async function() {
     .update(resetToken)
     .digest('hex');
 
-    console.log({ resetToken },"this is the resetpasswordtoken in the model",
-    this.passwordResetToken);
+    // console.log({ resetToken },"this is the resetpasswordtoken in the model",
+    // this.passwordResetToken);
     this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-    console.log('end of createresettoken')
+    // console.log('end of createresettoken')
     return resetToken;
 };
 
