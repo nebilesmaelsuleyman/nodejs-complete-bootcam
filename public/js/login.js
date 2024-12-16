@@ -16,6 +16,8 @@ export const login =async (email ,password)=>{
                 'Content-Type': 'application/json',
             }
         })
+
+        
     // console.log(res.data.status)
         if(res.data.status === 'success'){
             showAlert('success','loged in succesfully')

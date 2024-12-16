@@ -3,9 +3,12 @@ import '@babel/polyfill';
 import {login, logout} from './login'
 import {updateData} from './updateSetting'
 import { showAlert } from './alert';
+import {bookTour} from './stripe';
+
 const loginForm=document.querySelector('.form--login');
 const logoutbtn=document.querySelector('.nav__el--logout')
 const userDataForm = document.querySelector('.form-user-data');
+const Bookbtn=document.getElementById('book-tour')
 if(loginForm){
     loginForm.addEventListener('submit',e=>{
     e.preventDefault(); 
@@ -31,7 +34,6 @@ if(userDataForm){
             showAlert('error','please select a photo to upload')
             return;
         }
-
         // form.append('photo',document.getElementById('photo').files[0])
         console.log("Form data before upload:", Array.from(form.entries()));
         // const  name=document.getElementById('name').value;
@@ -45,3 +47,11 @@ if(userDataForm){
 
     })
 }
+if(Bookbtn)
+    Bookbtn.addEventListener('click',e=>{
+        e.target.textContent ='processing ...'
+        // in the pug the tour-id is changed in to camel case which is tourId
+        const {tourId}=e.target.dataset;
+        bookTour(tourId)
+
+    })

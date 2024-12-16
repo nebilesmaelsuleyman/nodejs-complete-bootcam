@@ -20,7 +20,7 @@ const signToken = id => {
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
-    maxAge:10*60*24*1000,
+    maxAge:24 * 60 * 60 * 1000,
     httpOnly:true,
     secure:false,
     path:'/'
@@ -46,7 +46,7 @@ const createSendToken = (user, statusCode, res) => {
 
   exports.signup = catchAsync(async (req, res, next) => {
     const { name,role, email, password, passwordConfirmation ,passwordChangedAt } = req.body;
-   
+  
     const newuser = await user.create({
       name,
       role,
@@ -85,20 +85,75 @@ const createSendToken = (user, statusCode, res) => {
 const ispasswordValid = await founduser.comparePassword({password})
 if (!ispasswordValid){
   return next(new AppError('incorrect password',401))
-}
-
-
-
-    // 3) If everything ok, send token to client
+}   // 3) If everything ok, send token to client
     createSendToken(founduser, 200, res);
   });
 
+
+  exports.protected=catchAsync(async (req,res,next)=>{
+    //  1 getting token check if it's there
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
+    // console.log('toekn from the cookies',req.cookies.jwt)
+  // console.log('header from the protected route',req.headers);
+    if (!token) {
+      return next(
+        new AppError('You are not logged in! Please log in to get access.', 401)
+      );
+    }
+  console.log('token from the cookies:',req.cookies.jwt)
+
+    if(!token){
+        return next(new AppError('your are not loged in  please login',401))
+    }
+    // 2 validate token
+
+    const decoded= await promisify(jwt.verify)(token,process.env.jwt_secrte)
+    console.log(decoded)
+
+
+      // 3) Check if user still exists
+      const currentUser = await user.findById(decoded.id);
+      console.log(decoded.id)
+      if (!currentUser) {
+        return next(
+          new AppError(
+            'The user belonging to this token does no longer exist.',
+            401
+          )
+        );
+      }
+      console.log('token from the protected route:',token)
+  
+    //4) check if user cahnged passwrod after the token was ussuied
+    //  if(currentUser.changedaPasswordAfter(decoded.iat)){
+    //   return next(new AppError('user recently changed password!,please login again',401))
+    //  }
+
+  
+    req.user= currentUser 
+    console.log('req.user',req.user)
+    //store temporarly the user data for rendering data in the view
+    req.locals={}
+    req.locals.user=currentUser 
+    console.log('req.locals.user',req.locals.user)
+    // Grant Acces to protected route
+    next()
+})
 
   exports.logout = (req, res) => {
     console.log('logout function')
     res.clearCookie('jwt', {
       expires: new Date(Date.now() + 10 * 1000),
       httpOnly: true,
+      sameSite:'None',
       path:'/'
     
     });
@@ -147,53 +202,7 @@ if (!ispasswordValid){
   };
   
 
-exports.protected=catchAsync(async (req,res,next)=>{
-    //  1 getting token check if it's there
-    let token;
-    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-        token =req.headers.authorization.split(' ')[1]
-    }else if (req.cookies.jwt){
-      token=req.cookies.jwt;
-    }
 
-
-    if(!token){
-        return next(new AppError('your are not loged in  please login',401))
-    }
-    // 2 validate token
-
-    const decoded= await promisify(jwt.verify)(token,process.env.jwt_secrte)
-    console.log(decoded)
-
-
-      // 3) Check if user still exists
-      const currentUser = await user.findById(decoded.id);
-      console.log(decoded.id)
-      if (!currentUser) {
-        return next(
-          new AppError(
-            'The user belonging to this token does no longer exist.',
-            401
-          )
-        );
-      }
-      
-  
-    //4) check if user cahnged passwrod after the token was ussuied
-    //  if(currentUser.changedaPasswordAfter(decoded.iat)){
-    //   return next(new AppError('user recently changed password!,please login again',401))
-    //  }
-
-  
-    req.user= currentUser 
-    console.log('req.user',req.user)
-    //store temporarly the user data for rendering data in the view
-    req.locals={}
-    req.locals.user=currentUser 
-    console.log('req.locals.user',req.locals.user)
-    // Grant Acces to protected route
-    next()
-})
 //only for renderd pates ,no errorss!
 
 exports.restrictTo =(...roles)=>{

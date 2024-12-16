@@ -5,12 +5,15 @@ const factory=require('./handlerfactory')
 const stripe=require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 
-exports.getCheckoutSession=catchAsync( async(req,res,next)=>{
+exports.getCheckoutSession=catchAsync( async (req,res,next)=>{
     // 1Get teh currently booked user
     const tour= await Tour.findById(req.params.tourId)
 
     // 2 create checkout session
-const session= await stripe.checkout.sessions.create({
+
+
+try {
+    const session = await stripe.checkout.sessions.create({
         payment_method_types:['card'],
         mode:'payment',
         success_url:`${req.protocol}://${req.get('host')}/`,
@@ -29,12 +32,18 @@ const session= await stripe.checkout.sessions.create({
             },
             quantity:1
         }]
-    })
+      // ... (same checkout session options) ...
+    });
 
-    // 3 create session as response
     res.status(200).json({
-        status:'succes',
-        session
-    })
+    status: 'success',
+    session,
+    });
+} catch (err) {
+    // Log the error for debugging
+    console.error(err);
 
+    // Return a generic error response to the user
+    return next(new AppError('Internal Server Error', 500));
+}
 });
