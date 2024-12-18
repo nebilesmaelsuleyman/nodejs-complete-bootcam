@@ -56,4 +56,22 @@ exports.createBookingCheckout = catchAsync(async (req,res,next)=>{
     if(!tour && !price && !user)return next();
     await Booking.create({tour,user,price});
     res.redirect(req.originalUrl.split('?')[0])
+    next()
 })
+exports.updateBooking=catchAsync(async(req,res,next)=>{
+    const booking=Booking.findByIdAndUpdate(req.Booking.id)
+    if(!booking){
+        return next(new AppError('no seach booking found',404))
+    }
+    res.status(202).json({
+        status:'succes',
+        booking
+    })
+    next( )
+})
+ 
+exports.createBooking=factory.createOne(Booking);
+exports.getBooking= factory.getOne(Booking)
+exports.getAllBookings=factory.getAll(Booking);
+exports.updateBooking=factory.updateOne(Booking);
+exports.deleteBooking=factory.deleteOne(Booking)

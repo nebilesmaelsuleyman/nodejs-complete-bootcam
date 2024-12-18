@@ -3,7 +3,7 @@ const mongoose =require('mongoose');
 const bookingSchema= new mongoose.Schema({
     user: { 
         type:mongoose.Schema.ObjectId,
-        ref: 'User',
+        ref: 'user',
         required: [true,'booking needs user'] 
         },
     tour: { 
@@ -30,10 +30,8 @@ bookingSchema.pre(/^find/,function(next){
     this.populate('user').populate({
         path:'tour',
         select:'name'
-    }
-        
-        
-    )
+    })
+    next()
 })
 
 const Booking= mongoose.model('Booking',bookingSchema);

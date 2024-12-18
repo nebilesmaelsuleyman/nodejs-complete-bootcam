@@ -129,5 +129,5 @@ userSchema.methods.createPasswordResetToken = async function() {
 //     if(this.isModified('password')|| this.isNew )return next();  
 //     this.passwordChangedAt = Date.now() -10000;
 // })
-var user = mongoose.model('user',userSchema)
-    module.exports=user;
+var user = mongoose.model('user', userSchema)
+module.exports=user;

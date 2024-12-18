@@ -11,6 +11,7 @@ Router.get('/',bookingController.createBookingCheckout, authController.isLoggedI
 Router.get('/tour/:slug',authController.isLoggedIn , viewsController.getTour)
 Router .get('/login',authController.isLoggedIn, viewsController.logintemp)
 Router.get('/me', authController.protected,authController.isLoggedIn,viewsController.getAccount)
+Router.get('/my-tours',authController.protected,viewsController.getMyTours)
 Router.post('/submit-user-data', authController.protected,viewsController.updateUserData);
 
 module.exports=Router
